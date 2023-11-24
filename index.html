@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guessing Game</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('p4.jpg');
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .login-container {
+            background-color: #d38f8f;
+            padding: 60px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-top: 40px;
+            width: 550px;
+
+        }
+
+        h2 {
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: #ff5555;
+            margin-top: 10px;
+        }
+
+        #forgot-password {
+            text-decoration: none;
+            color: darkred;
+            font-size: 14px;
+        }
+
+        #forgot-password:hover {
+            text-decoration: underline;
+        }
+         p {
+            color:black;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="container">
+        <section class="login-container">
+            <h2>Number Guessing Game</h2>
+            <p>Guess a number between 1 and 10:</p>
+            <div class="form-group">
+                <input type="number" id="userGuess" placeholder="Enter Your Guess" required>
+            </div>
+            <button type="button" onclick="checkGuess()" id="submitGuessButton">Submit Guess</button>
+            <p id="feedback"></p>
+            <img id="successGif" src="lucky.gif" style="display: none; width: 100%; max-width: 450px;">
+            <img id="failureGif" src="go.gif" style="display: none; width: 100%; max-width: 450px;">
+            <p>Chances left: <span id="chances">3</span></p>
+            <button type="button" id="retryButton" onclick="retryGame()" disabled>Retry</button>
+        </section>
+    </div>
+
+    <script>
+        let correctNumber = generateRandomNumber();
+        let remainingChances = 3;
+        let submitCount = 0;
+
+        function generateRandomNumber() {
+            return Math.floor(Math.random() * 10) + 1;
+        }
+
+        function checkGuess() {
+            if (submitCount >= 3) {
+                alert("You have submitted the maximum number of guesses.");
+                return;
+            }
+
+            const userGuess = parseInt(document.getElementById("userGuess").value);
+
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 10) {
+                alert("Please enter a valid number between 1 and 10.");
+                return;
+            }
+
+            submitCount++;
+
+            if (userGuess === correctNumber) {
+                document.getElementById("feedback").innerText = "Congratulations! You guessed the correct number.";
+                document.getElementById("successGif").style.display = "block"; // Show success GIF
+                disableGame();
+            } else {
+                remainingChances--;
+
+                if (remainingChances === 0) {
+                    document.getElementById("feedback").innerText = `Sorry, you're out of chances. The correct number was ${correctNumber}.`;
+                    document.getElementById("failureGif").style.display = "block"; // Show failure GIF
+                    disableGame();
+                } else {
+                    document.getElementById("feedback").innerText = userGuess < correctNumber ? "Try a higher number." : "Try a lower number.";
+                    document.getElementById("chances").innerText = remainingChances;
+                }
+            }
+        }
+
+        function disableGame() {
+            document.getElementById("submitGuessButton").disabled = true;
+            document.getElementById("retryButton").disabled = false;
+            document.getElementById("userGuess").disabled = true;
+        }
+
+        function retryGame() {
+            correctNumber = generateRandomNumber();
+            remainingChances = 3;
+            submitCount = 0;
+            document.getElementById("chances").innerText = remainingChances;
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("successGif").style.display = "none"; // Hide success GIF
+            document.getElementById("failureGif").style.display = "none"; // Hide failure GIF
+            document.getElementById("submitGuessButton").disabled = false;
+            document.getElementById("retryButton").disabled = true;
+            document.getElementById("userGuess").disabled = false;
+            document.getElementById("userGuess").value = "";
+        }
+    </script>
+</body>
+
+</html>
